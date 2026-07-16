@@ -26,7 +26,7 @@ pub const Server = struct {
     };
 
     pub fn init(allocator: std.mem.Allocator, port: u16) !Server {
-        const address = try net.Address.initIp4(.{ 0, 0, 0, 0 }, port);
+        const address = net.Address.initIp4(.{ 0, 0, 0, 0 }, port);
         const listener = address.listen(.{ .reuse_address = true }) catch |err| return err;
         return Server{
             .allocator = allocator,
