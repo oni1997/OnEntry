@@ -23,31 +23,26 @@ fn health(ctx: *Server.Context) !void {
 }
 
 fn backup(ctx: *Server.Context) !void {
-    _ = ctx;
     std.log.info("Backup requested", .{});
     try ctx.json(.{.message = "Backup started"});
 }
 
 fn exportVault(ctx: *Server.Context) !void {
-    _ = ctx;
     std.log.info("Export requested", .{});
     try ctx.json(.{.message = "Export started"});
 }
 
 fn verifyDatabase(ctx: *Server.Context) !void {
-    _ = ctx;
     std.log.info("Database verification requested", .{});
     try ctx.json(.{.status = "verified", .issues = 0});
 }
 
 fn cleanup(ctx: *Server.Context) !void {
-    _ = ctx;
     std.log.info("Cleanup requested", .{});
     try ctx.json(.{.message = "Cleanup completed"});
 }
 
 fn restore(ctx: *Server.Context) !void {
-    _ = ctx;
     std.log.info("Restore requested", .{});
     try ctx.json(.{.message = "Restore started"});
 }

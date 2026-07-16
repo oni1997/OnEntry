@@ -1,4 +1,4 @@
-FROM alpine:latest AS builder
+FROM alpine:3.19 AS builder
 RUN apk add --no-cache zig build-base
 WORKDIR /build
 COPY build.zig .
