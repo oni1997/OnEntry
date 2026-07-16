@@ -30,10 +30,11 @@ pub const Server = struct {
         var server = Server{
             .allocator = allocator,
             .address = address,
-            .listener = net.Server.init(.{ .reuse_address = true }),
+            .listener = undefined,
             .routes = std.StringHashMap(*const fn (*Context) anyerror!void).init(allocator),
         };
-        try server.listener.listen(address);
+        server.listener = net.Server.init(address) catch |err| return err;
+        try server.listener.listen();
         return server;
     }
 
