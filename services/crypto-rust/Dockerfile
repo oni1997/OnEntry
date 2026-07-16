@@ -1,9 +1,8 @@
 FROM rust:1.75-slim-bullseye AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY Cargo.toml ./
+COPY . .
 RUN cargo fetch
-COPY src ./src
 RUN cargo build --release
 
 FROM debian:bullseye-slim
