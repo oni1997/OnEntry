@@ -1,15 +1,16 @@
 use argon2::{
     password_hash::{
         rand_core::OsRng,
-        PasswordHash, PasswordHasher, PasswordVerifier, SaltString
+        PasswordHash, PasswordHasher, SaltString
     },
-    Argon2, Algorithm, Params, Version,
+    Argon2,
 };
 use base64::{engine::general_purpose, Engine as _};
 use aes_gcm::{
-    aead::{Aead, KeyInit, OsRng as AesOsRng},
+    aead::{Aead, KeyInit},
     Aes256Gcm, Nonce,
 };
+use rand::RngCore;
 use hex;
 
 pub struct HashResult {
@@ -61,7 +62,8 @@ pub fn encrypt(plaintext: &str, key_hex: &str) -> Result<EncryptResult, String> 
     }
 
     let cipher = Aes256Gcm::new_from_slice(&key_bytes).map_err(|e| e.to_string())?;
-    let nonce_bytes = AesOsRng.next_bytes(12);
+    let mut nonce_bytes = [0u8; 12];
+    OsRng.fill_bytes(&mut nonce_bytes);
     let nonce = Nonce::from_slice(&nonce_bytes);
     let ciphertext = cipher.encrypt(nonce, plaintext.as_bytes())
         .map_err(|e| e.to_string())?;

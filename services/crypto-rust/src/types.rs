@@ -1,5 +1,3 @@
-use serde::Deserialize;
-
 #[derive(serde::Deserialize)]
 pub struct HashPasswordRequest {
     pub password: String,

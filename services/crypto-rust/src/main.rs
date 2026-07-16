@@ -4,12 +4,14 @@ mod types;
 
 use axum::{
     routing::post,
-    Router, Server,
+    Router,
 };
 use std::net::SocketAddr;
+use tokio::net::TcpListener;
 use tracing_subscriber;
 
-use crate::types::{EncryptRequest, GeneratePasswordRequest, HashPasswordRequest, VerifyPasswordRequest};
+use crate::types::{EncryptRequest, HashPasswordRequest, VerifyPasswordRequest};
+use crate::password::GeneratePasswordRequest;
 
 #[tokio::main]
 async fn main() {
@@ -25,8 +27,8 @@ async fn main() {
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 8083));
     println!("Crypto service listening on {}", addr);
-    Server::bind(&addr)
-        .serve(app.into_make_service())
+    let listener = TcpListener::bind(addr).await.unwrap();
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
 }

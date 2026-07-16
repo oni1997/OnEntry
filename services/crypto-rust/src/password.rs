@@ -1,7 +1,6 @@
 use rand::distributions::{Distribution, Uniform};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rand_distr::Alphanumeric;
 
 const UPPERCASE: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const LOWERCASE: &[u8] = b"abcdefghijklmnopqrstuvwxyz";
@@ -52,7 +51,7 @@ pub fn generate(req: GeneratePasswordRequest) -> Result<String, String> {
     Ok(String::from_utf8(password).unwrap_or_default())
 }
 
-fn generate_pronounceable(length: usize, charset: &[u8]) -> Vec<u8> {
+fn generate_pronounceable(length: usize, _charset: &[u8]) -> Vec<u8> {
     let mut rng = thread_rng();
     let consonants = b"bcdfghjklmnpqrstvwxyz";
     let vowels = b"aeiou";
