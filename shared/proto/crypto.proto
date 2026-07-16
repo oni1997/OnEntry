@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package onentry.crypto;
+
+service CryptoService {
+  rpc HashPassword(HashPasswordRequest) returns (HashPasswordResponse);
+  rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordResponse);
+  rpc DeriveMasterKey(DeriveMasterKeyRequest) returns (DeriveMasterKeyResponse);
+  rpc Encrypt(EncryptRequest) returns (EncryptResponse);
+  rpc Decrypt(DecryptRequest) returns (DecryptResponse);
+  rpc GeneratePassword(GeneratePasswordRequest) returns (GeneratePasswordResponse);
+}
+
+message HashPasswordRequest {
+  string password = 1;
+}
+
+message HashPasswordResponse {
+  string hash = 1;
+  string salt = 2;
+}
+
+message VerifyPasswordRequest {
+  string password = 1;
+  string hash = 2;
+}
+
+message VerifyPasswordResponse {
+  bool valid = 1;
+}
+
+message DeriveMasterKeyRequest {
+  string password = 1;
+  string salt = 2;
+}
+
+message DeriveMasterKeyResponse {
+  string master_key = 1;
+}
+
+message EncryptRequest {
+  string plaintext = 1;
+  string key = 2;
+}
+
+message EncryptResponse {
+  string ciphertext = 1;
+  string nonce = 2;
+}
+
+message DecryptRequest {
+  string ciphertext = 1;
+  string nonce = 2;
+  string key = 3;
+}
+
+message DecryptResponse {
+  string plaintext = 1;
+}
+
+message GeneratePasswordRequest {
+  int32 length = 1;
+  bool uppercase = 2;
+  bool lowercase = 3;
+  bool numbers = 4;
+  bool symbols = 5;
+  bool exclude_similar = 6;
+  bool pronounceable = 7;
+}
+
+message GeneratePasswordResponse {
+  string password = 1;
+}

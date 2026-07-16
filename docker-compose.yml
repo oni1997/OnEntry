@@ -1,0 +1,123 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: onentry-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: onentry
+      POSTGRES_USER: onentry
+      POSTGRES_PASSWORD: onentry_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onentry"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: onentry-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  crypto-rust:
+    build:
+      context: ./services/crypto-rust
+      dockerfile: Dockerfile
+    container_name: onentry-crypto
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      RUST_LOG: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-go:
+    build:
+      context: ./services/api-go
+      dockerfile: Dockerfile
+    container_name: onentry-api
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      DATABASE_URL: postgres://onentry:onentry_password@postgres:5432/onentry?sslmode=disable
+      REDIS_URL: redis://redis:6379
+      CRYPTO_SERVICE_URL: http://crypto-rust:8083
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      PORT: "8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      crypto-rust:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  utility-zig:
+    build:
+      context: ./services/utility-zig
+      dockerfile: Dockerfile
+    container_name: onentry-utility
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      DATABASE_URL: postgres://onentry:onentry_password@postgres:5432/onentry?sslmode=disable
+      CRYPTO_SERVICE_URL: http://crypto-rust:8083
+    depends_on:
+      postgres:
+        condition: service_healthy
+      crypto-rust:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: onentry-web
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8082}
+    depends_on:
+      api-go:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
