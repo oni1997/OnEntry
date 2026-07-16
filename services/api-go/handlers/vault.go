@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/oni1997/onentry/services/api-go/database"
@@ -13,13 +12,6 @@ import (
 type VaultHandler struct {
 	db     *database.DB
 	crypto CryptoClient
-}
-
-type CryptoClient interface {
-	DecryptVault(ctx context.Context, ciphertext []byte, nonce []byte, key string) (string, error)
-	EncryptVault(ctx context.Context, plaintext string, key string) (*models.Vault, error)
-	EncryptPassword(ctx context.Context, password string, key string) ([]byte, []byte, error)
-	DecryptPassword(ctx context.Context, ciphertext []byte, nonce []byte, key string) (string, error)
 }
 
 func NewVaultHandler(db *database.DB, crypto CryptoClient) *VaultHandler {

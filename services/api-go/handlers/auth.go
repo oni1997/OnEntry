@@ -34,11 +34,6 @@ type RegisterHandler struct {
 	crypto CryptoClient
 }
 
-type CryptoClient interface {
-	HashPassword(ctx context.Context, password string) (string, string, error)
-	DeriveMasterKey(ctx context.Context, password string, salt string) (string, error)
-}
-
 func NewRegisterHandler(db *database.DB, crypto CryptoClient) *RegisterHandler {
 	return &RegisterHandler{db: db, crypto: crypto}
 }

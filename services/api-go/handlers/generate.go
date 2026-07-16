@@ -1,11 +1,9 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/oni1997/onentry/services/api-go/database"
-	"github.com/oni1997/onentry/services/api-go/middleware"
 	"github.com/oni1997/onentry/services/api-go/models"
 	"github.com/oni1997/onentry/services/api-go/utils"
 )
@@ -13,11 +11,6 @@ import (
 type GenerateHandler struct {
 	db     *database.DB
 	crypto CryptoClient
-}
-
-type CryptoClient interface {
-	GeneratePassword(ctx context.Context, req models.GeneratePasswordRequest) (string, error)
-	EncryptPassword(ctx context.Context, password string, key string) ([]byte, []byte, error)
 }
 
 func NewGenerateHandler(db *database.DB, crypto CryptoClient) *GenerateHandler {

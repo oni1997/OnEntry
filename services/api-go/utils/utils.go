@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/mail"
@@ -13,8 +14,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func DecodeJSON(r interface{ ReadJSON(interface{}) error }, v interface{}) error {
-	if err := r.ReadJSON(v); err != nil {
+func DecodeJSON(r *http.Request, v interface{}) error {
+	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
 		return fmt.Errorf("invalid JSON: %w", err)
 	}
 	return nil
