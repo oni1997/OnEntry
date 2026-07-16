@@ -1,9 +1,9 @@
 FROM alpine:3.19 AS builder
 RUN apk add --no-cache build-base wget
-RUN wget -q https://ziglang.org/download/0.10.1/zig-linux-x86_64-0.10.1.tar.xz && \
-    tar xf zig-linux-x86_64-0.10.1.tar.xz && \
-    ln -s /zig-linux-x86_64-0.10.1/zig /usr/local/bin/zig && \
-    rm zig-linux-x86_64-0.10.1.tar.xz
+RUN wget -q https://ziglang.org/download/0.12.0/zig-linux-x86_64-0.12.0.tar.xz && \
+    tar xf zig-linux-x86_64-0.12.0.tar.xz && \
+    ln -s /zig-linux-x86_64-0.12.0/zig /usr/local/bin/zig && \
+    rm zig-linux-x86_64-0.12.0.tar.xz
 WORKDIR /build
 COPY build.zig .
 COPY src ./src

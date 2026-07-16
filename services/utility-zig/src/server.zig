@@ -4,7 +4,7 @@ const net = std.net;
 pub const Server = struct {
     allocator: std.mem.Allocator,
     address: net.Address,
-    listener: net.StreamServer,
+    listener: net.Server,
     routes: std.StringHashMap(*const fn (*Context) anyerror!void),
 
     pub const Context = struct {
@@ -26,13 +26,14 @@ pub const Server = struct {
     };
 
     pub fn init(allocator: std.mem.Allocator, port: u16) !Server {
+        const address = try net.Address.initIp4(.{ 0, 0, 0, 0 }, port);
         var server = Server{
             .allocator = allocator,
-            .address = try net.Address.initIp4(.{ 0, 0, 0, 0 }, port),
-            .listener = undefined,
+            .address = address,
+            .listener = net.Server.init(.{ .reuse_address = true }),
             .routes = std.StringHashMap(*const fn (*Context) anyerror!void).init(allocator),
         };
-        try server.listener.listen(server.address, .{ .reuse_address = true });
+        try server.listener.listen(address);
         return server;
     }
 
@@ -62,10 +63,10 @@ pub const Server = struct {
         }
     }
 
-    fn handleConnection(self: *Server, conn: net.Stream) void {
-        defer conn.close() catch {};
-        const reader = conn.reader();
-        const writer = conn.writer();
+    fn handleConnection(self: *Server, conn: net.Server.Connection) void {
+        defer conn.stream.close() catch {};
+        const reader = conn.stream.reader();
+        const writer = conn.stream.writer();
 
         var buf: [4096]u8 = undefined;
         const read = reader.read(&buf) catch 0;
