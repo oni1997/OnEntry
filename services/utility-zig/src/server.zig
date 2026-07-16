@@ -4,7 +4,7 @@ const net = std.net;
 pub const Server = struct {
     allocator: std.mem.Allocator,
     address: net.Address,
-    listener: net.Server,
+    listener: net.StreamServer,
     routes: std.StringHashMap(*const fn (*Context) anyerror!void),
 
     pub const Context = struct {
@@ -29,10 +29,10 @@ pub const Server = struct {
         var server = Server{
             .allocator = allocator,
             .address = try net.Address.initIp4(.{ 0, 0, 0, 0 }, port),
-            .listener = net.Server.init(.{ .reuse_address = true }),
+            .listener = undefined,
             .routes = std.StringHashMap(*const fn (*Context) anyerror!void).init(allocator),
         };
-        try server.listener.listen(server.address);
+        try server.listener.listen(server.address, .{ .reuse_address = true });
         return server;
     }
 
@@ -58,7 +58,7 @@ pub const Server = struct {
                 std.log.warn("Accept error: {any}", .{err});
                 continue;
             };
-            _ = try std.Thread.spawn(.{}, handleConnection, .{self, conn.stream});
+            _ = try std.Thread.spawn(.{}, handleConnection, .{self, conn});
         }
     }
 
