@@ -82,7 +82,7 @@ pub const Server = struct {
         std.log.info("{s} {s}", .{ method, route_path });
 
         if (self.routes.get(route_path)) |handler| {
-            const ctx = Context{
+            var ctx = Context{
                 .request = Request{
                     .method = method,
                     .path = route_path,
