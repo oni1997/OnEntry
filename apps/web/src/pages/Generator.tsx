@@ -62,7 +62,7 @@ export default function Generator() {
             <div className="flex items-center space-x-2">
               <div className="flex-1 bg-gray-700 rounded-full h-2">
                 <div
-                  className={`h-2 rounded-full ${strerength.color}`}
+                  className={`h-2 rounded-full ${strength.color}`}
                   style={{ width: `${strength.percentage}%` }}
                 />
               </div>

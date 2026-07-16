@@ -5,7 +5,6 @@ export default function Vault() {
   const [entries, setEntries] = useState<PasswordEntry[]>([])
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [masterKey, setMasterKey] = useState('')
 
   useEffect(() => {
     const saved = localStorage.getItem('vault_entries')

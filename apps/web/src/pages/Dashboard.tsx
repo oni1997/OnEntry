@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { PasswordEntry } from '../api/client'
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ total: 0, favorites: 0, recent: 0, weak: 0, reused: 0 })

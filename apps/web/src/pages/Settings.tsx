@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Settings() {
-  const [masterKey, setMasterKey] = useState('')
   const navigate = useNavigate()
 
   const handleExport = () => {
