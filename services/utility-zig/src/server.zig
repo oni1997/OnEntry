@@ -93,10 +93,10 @@ pub const Server = struct {
             };
             handler(&ctx) catch |err| {
                 std.log.err("Handler error: {any}", .{err});
-                _ = writer.print("HTTP/1.1 500 Internal Server Error\r\n\r\n") catch {};
+                _ = writer.print("HTTP/1.1 500 Internal Server Error\r\n\r\n", .{}) catch {};
             };
         } else {
-            _ = writer.print("HTTP/1.1 404 Not Found\r\n\r\n") catch {};
+            _ = writer.print("HTTP/1.1 404 Not Found\r\n\r\n", .{}) catch {};
         }
     }
 };
