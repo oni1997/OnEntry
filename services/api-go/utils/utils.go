@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"net/http"
 	"net/mail"
 	"regexp"
 	"strings"
@@ -37,15 +38,11 @@ func HashSHA256(data string) string {
 	return hex.EncodeToString(h[:])
 }
 
-func GetClientIP(r interface{ RemoteAddr string; Header Getter }) string {
+func GetClientIP(r *http.Request) string {
 	if forwarded := r.Header.Get("X-Forwarded-For"); forwarded != "" {
 		return strings.Split(forwarded, ",")[0]
 	}
 	return r.RemoteAddr
-}
-
-type Getter interface {
-	Get(string) string
 }
 
 var passwordPattern = regexp.MustCompile(`^[A-Za-z0-9!@#$%^&*]{8,}$`)
