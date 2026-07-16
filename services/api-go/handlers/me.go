@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/oni1997/onentry/services/api-go/database"
 	"github.com/oni1997/onentry/services/api-go/middleware"
 	"github.com/oni1997/onentry/services/api-go/models"
-	"github.com/oni1997/onentry/services/api-go/utils"
 )
 
 type MeHandler struct {

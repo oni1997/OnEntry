@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/oni1997/onentry/services/api-go/database"
 	"github.com/oni1997/onentry/services/api-go/models"
