@@ -27,15 +27,13 @@ pub const Server = struct {
 
     pub fn init(allocator: std.mem.Allocator, port: u16) !Server {
         const address = try net.Address.initIp4(.{ 0, 0, 0, 0 }, port);
-        var server = Server{
+        const listener = address.listen(.{ .reuse_address = true }) catch |err| return err;
+        return Server{
             .allocator = allocator,
             .address = address,
-            .listener = undefined,
+            .listener = listener,
             .routes = std.StringHashMap(*const fn (*Context) anyerror!void).init(allocator),
         };
-        server.listener = net.Server.init(address) catch |err| return err;
-        try server.listener.listen();
-        return server;
     }
 
     pub fn deinit(self: *Server) void {
