@@ -63,7 +63,7 @@ pub const Server = struct {
     }
 
     fn handleConnection(self: *Server, conn: net.Server.Connection) void {
-        defer conn.stream.close() catch {};
+        defer conn.stream.close();
         const reader = conn.stream.reader();
         const writer = conn.stream.writer();
 
