@@ -101,6 +101,10 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+func Now() time.Time {
+	return time.Now()
+}
+
 type APIResponse struct {
 	Success bool        `json:"success"`
 	Data    interface{} `json:"data,omitempty"`
