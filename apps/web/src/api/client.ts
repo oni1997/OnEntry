@@ -42,7 +42,8 @@ export async function api<T>(
     const err = await res.json().catch(() => ({ error: res.statusText }))
     throw new Error(err.error || res.statusText)
   }
-  return res.json()
+  const json = await res.json()
+  return json.data !== undefined ? json.data : json
 }
 
 export async function register(email: string, password: string, masterKey: string) {
